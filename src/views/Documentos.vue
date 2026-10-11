@@ -1,7 +1,7 @@
 <template>
   <div>
     <Navigator />
-    <h1 style="padding-left: 28px;">Tramites</h1>
+    <h1 style="padding-left: 28px">Tramites</h1>
     <div class="formalities">
       <header class="header">
         <p>Fecha</p>
@@ -21,29 +21,33 @@
 </template>
 
 <script>
-import Navigator from "@/components/Navigator";
-import Formalitie from "@/components/Formalitie";
-import loading from "@/components/loading";
-import { mapState } from "vuex";
+import Navigator from "@/components/Navigator.vue";
+import Formalitie from "@/components/Formalitie.vue";
+import loading from "@/components/loading.vue";
+import { mapState } from "pinia";
+import { useAppStore } from "@/store";
 export default {
+  setup() {
+    return { appStore: useAppStore() };
+  },
   name: "Tramites",
   components: {
     Navigator,
     Formalitie,
-    loading
+    loading,
   },
   data() {
     return {};
   },
   mounted() {
-    this.$store.dispatch("getFormalities");
+    this.appStore.getFormalities();
   },
   computed: {
-    ...mapState(["formalities"]),
-    ...mapState(["mostrarFormal"])
+    ...mapState(useAppStore, ["formalities"]),
+    ...mapState(useAppStore, ["mostrarFormal"]),
   },
 
-  methods: {}
+  methods: {},
 };
 </script>
 
@@ -56,7 +60,8 @@ export default {
 .header {
   width: 100%;
   height: 45px;
-  background-color: #3694ff;
+  background: linear-gradient(110deg, var(--ocean-deep), var(--ocean-navy));
+  border-bottom: 3px solid var(--ocean-cyan);
   display: grid;
   grid-template-columns: 21% 59% 20%;
   align-items: center;
@@ -80,19 +85,20 @@ export default {
   display: grid;
   grid-template-columns: 20% 60% 20%;
   align-items: center;
-  border: 1px solid #8fb7e49c;
+  border: 1px solid var(--ocean-border);
+  background: var(--ocean-gradient-surface);
   cursor: pointer;
 }
 .formalitie__header p {
   margin-bottom: 0 !important;
   margin-left: 75px;
-  color: #000000;
+  color: var(--ocean-ink);
 }
 .formalitie__info {
   width: 100%;
   height: auto;
   padding: 20px 25px 0 25px;
-  border: 1px solid #8fb7e49c;
+  border: 1px solid var(--ocean-border);
 }
 @media (max-width: 730px) {
   .formalitie__header {

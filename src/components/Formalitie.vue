@@ -1,14 +1,14 @@
 <template>
   <div class="formalitie">
     <div class="formalitie__header" @click="showInfoFormalitie">
-      <p style="font-size: 13px;">{{ formalitie.Fecha }}</p>
+      <p style="font-size: 13px">{{ formalitie.Fecha }}</p>
       <div>
         <p
-          style="font-size: 13px; font-weight: 600;"
+          style="font-size: 13px; font-weight: 600"
           v-html="formalitie.TramiteNombre"
         ></p>
         <p
-          style="margin: 0px;font-size: 10px;"
+          style="margin: 0px; font-size: 10px"
           v-html="formalitie.FechaEstadoTexto"
         ></p>
       </div>
@@ -27,7 +27,7 @@
         <p>Id de solicitud: {{ formalitie.IdTramiteSolicitud }}</p>
 
         <div
-          style="display: flex;flex-direction: column;"
+          style="display: flex; flex-direction: column"
           v-if="formalitie.IdTramite == 2"
         >
           <input
@@ -48,13 +48,16 @@
         >
           <input class="buttonFormalities" type="button" value="Procede" />
           <input
-            style="background: #e45258;"
+            style="background: #e45258"
             class="buttonFormalities"
             type="button"
             value="No Procede"
           />
           <input
-            style="background: #FFC053;"
+            style="
+              background: var(--ocean-gradient-yellow);
+              color: var(--ocean-onAccent, var(--ocean-navy));
+            "
             class="buttonFormalities"
             type="button"
             value="En Espera"
@@ -65,7 +68,7 @@
       <hr style="division" />
 
       <div class="formalitie__info-text">
-        <p style="font-weight: bold; font-size: 15px;">Cursos</p>
+        <p style="font-weight: bold; font-size: 15px">Cursos</p>
         <p>{{ formalitie.TramiteSolicitudDisponible1 }}</p>
         <p>{{ formalitie.TramiteSolicitudDisponible2 }}</p>
         <p>{{ formalitie.TramiteSolicitudDisponible3 }}</p>
@@ -81,19 +84,19 @@ export default {
   name: "Tramites",
 
   props: {
-    formalitie: { required: true, type: Object }
+    formalitie: { required: true, type: Object },
   },
   data() {
     return {
-      showInfo: false
+      showInfo: false,
     };
   },
   computed: {},
   methods: {
     showInfoFormalitie() {
       this.showInfo = !this.showInfo;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -112,7 +115,7 @@ export default {
 }
 
 .buttonFormalities {
-  background: #6cb368;
+  background: var(--ocean-deep);
   border-radius: 8px;
   padding: 5px;
   width: 101px;
@@ -131,7 +134,7 @@ export default {
 }
 
 .formalitiesNote {
-  border: 2px solid rgba(212, 212, 212, 0.58);
+  border: 2px solid var(--ocean-border);
   width: 39% !important;
   border-radius: 7px;
   height: 36px;
@@ -141,7 +144,7 @@ export default {
   margin-bottom: 12px;
 }
 .formalitiesNote-Text {
-  border: 2px solid rgba(212, 212, 212, 0.58);
+  border: 2px solid var(--ocean-border);
   width: 66% !important;
   border-radius: 8px;
   height: 86px;

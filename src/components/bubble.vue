@@ -15,23 +15,23 @@
   </div>
 </template>
 <script>
-import InfoCourse from "@/components/InfoCourse";
+import InfoCourse from "@/components/InfoCourse.vue";
 
 export default {
   name: "bubble",
   components: {
-    InfoCourse
+    InfoCourse,
   },
   props: ["item", "index"],
   data() {
     return {
-      showInfo: false
+      showInfo: false,
     };
   },
   mounted() {
     document.addEventListener("click", this.close);
   },
-  beforeDestroy() {
+  beforeUnmount() {
     document.removeEventListener("click", this.close);
   },
 
@@ -50,8 +50,8 @@ export default {
       if (!this.$el.contains(e.target)) {
         this.showInfo = false;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

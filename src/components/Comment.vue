@@ -2,12 +2,11 @@
   <div>
     <div
       v-if="comment.is_mine == true"
-      style="display: flex;
-    border-top: 1px solid #c1babad6;"
+      style="display: flex; border-top: 1px solid var(--ocean-border)"
     >
       <div
         class="deleteComment"
-        style="cursor:pointer;font-size: 12px;    margin-right: 12px;"
+        style="cursor: pointer; font-size: 12px; margin-right: 12px"
         @click="removeComentarios(comment.id)"
         dark
       >
@@ -15,7 +14,7 @@
       </div>
 
       <div
-        style="font-size: 12px;"
+        style="font-size: 12px"
         class="deleteComment"
         @click="openModal()"
         dark
@@ -25,57 +24,65 @@
     </div>
     <div
       class="comments__comment--name"
-      style="    background: #F1F2F5;
-    border-radius: 14px;
-    padding-top: 5px;
-    padding-left: 17px;
-    font-size: 13px;
-    padding-bottom: 6px;
-    width: max-content;
-    max-width: 100%;
-    padding-right: 17px;"
+      style="
+        background: var(--ocean-tint);
+        border-radius: 14px;
+        padding-top: 5px;
+        padding-left: 17px;
+        font-size: 13px;
+        padding-bottom: 6px;
+        width: max-content;
+        max-width: 100%;
+        padding-right: 17px;
+      "
     >
       <p class="commentsMobile">
         {{ comment.user.name }}
       </p>
 
-      <p style="word-break: break-word;font-size: 12px;margin:0px;">
+      <p style="word-break: break-word; font-size: 12px; margin: 0px">
         {{ comment.text }}
       </p>
     </div>
 
     <div
-      style="    cursor: pointer;
-    color: rgb(109, 101, 101);
-    font-weight: 600;
-    font-size: 11px;
-    margin-left: 12px;"
+      style="
+        cursor: pointer;
+        color: var(--ocean-muted);
+        font-weight: 600;
+        font-size: 11px;
+        margin-left: 12px;
+      "
       dark
       @click="addSubComments(comment.id)"
     >
       Responder
     </div>
     <input
-      style="border: 2px solid rgba(212, 212, 212, 0.58);
-    width: 97%;
-    height: 30px;
-    padding-left: 7px;
-    font-size: 13px;
-    border-radius: 14px;
-    margin-left: 10px;
-    outline:none"
+      style="
+        border: 2px solid var(--ocean-border);
+        width: 97%;
+        height: 30px;
+        padding-left: 7px;
+        font-size: 13px;
+        border-radius: 14px;
+        margin-left: 10px;
+        outline: none;
+      "
       type="text"
       placeholder="Escribe un Comentario"
       v-model="postSubComment"
     />
 
     <p
-      style="    color: rgb(140, 171, 206);
-    cursor: pointer;
-    font-size: 12px;
-    margin-left: 18px;
-    margin-top: 0px;
-    margin-bottom: 1px;"
+      style="
+        color: var(--ocean-link, var(--ocean-deep));
+        cursor: pointer;
+        font-size: 12px;
+        margin-left: 18px;
+        margin-top: 0px;
+        margin-bottom: 1px;
+      "
       @click="space"
     >
       ver mas
@@ -94,18 +101,23 @@
 </template>
 
 <script>
+import api from "@/services/api";
+import { useAppStore } from "@/store";
 import Swal from "sweetalert2";
-import subComment from "./subComment";
+import subComment from "./subComment.vue";
 export default {
+  setup() {
+    return { appStore: useAppStore() };
+  },
   data() {
     return {
       dialogComm: false,
       postSubComment: "",
-      subcoment: false
+      subcoment: false,
     };
   },
   components: {
-    subComment
+    subComment,
   },
   props: ["comment", "index"],
   methods: {
@@ -115,11 +127,11 @@ export default {
         inputValue: this.comment.text,
         inputPlaceholder: "Escribe tu mensaje aquí",
         inputAttributes: {
-          "aria-label": "Escribe tu mensaje aquí"
+          "aria-label": "Escribe tu mensaje aquí",
         },
         showCancelButton: true,
         cancelButtonText: "Cancelar",
-        confirmButtonText: "Aceptar"
+        confirmButtonText: "Aceptar",
       });
 
       if (text) {
@@ -127,52 +139,52 @@ export default {
       }
     },
     async removeComentarios() {
-      await this.$store.dispatch("deleteComentarios", this.comment.id);
+      await this.appStore.deleteComentarios(this.comment.id);
     },
     space() {
       this.subcoment = !this.subcoment;
     },
     async saveComentario(text) {
       try {
-        // eslint-disable-next-line no-console
-
-        const response = await this.$http.post("/api/comment/edit", {
+        const response = await api.post("/api/comment/edit", {
           id_comment: this.comment.id,
-          text_comment: text
+          text_comment: text,
         });
 
-        if (response.status) {
-          // this.$store.dispatch("getPublications");
+        if (response.data.success) {
+          // await this.appStore.getPublications();
           await Swal.fire({
             icon: "success",
             title: "Finalizado",
-            text: "Comentario actualizado correctamente."
+            text: "Comentario actualizado correctamente.",
           });
 
-          this.comment.text = text;
+          await this.appStore.getPublications();
         }
-      } catch (e) {
+      } catch {
         Swal.fire({
           icon: "error",
           title: "Hubo un problema",
-          text: "No se actualizo el comentario correctamente"
+          text: "No se actualizo el comentario correctamente",
         });
       }
     },
     async addSubComments(id) {
       try {
-        await this.$http.post("/api/post_comment/create", {
+        await api.post("/api/post_comment/create", {
           id_comment: id,
-          text_sub_comment: this.postSubComment
+          text_sub_comment: this.postSubComment,
         });
         this.postSubComment = "";
-        this.$store.dispatch("getPublications");
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.log("lol");
+        await this.appStore.getPublications();
+      } catch {
+        await Swal.fire({
+          icon: "error",
+          text: "No se pudo guardar el comentario.",
+        });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 <style scoped>

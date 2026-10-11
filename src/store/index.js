@@ -1,21 +1,23 @@
-/* eslint-disable no-console */
-/* eslint-disable no-unused-vars */
-import Vuex from "vuex";
-import Vue from "vue";
-import axios from "axios";
+import { defineStore } from "pinia";
+import api, { getToken, setToken } from "@/services/api";
 import Swal from "sweetalert2";
 
-Vue.use(Vuex);
-
-axios.defaults.baseURL = "http://127.0.0.1:8000";
-// const token = "Bearer " + localStorage.getItem("token");
-
-// poner cada vez que se instancie
-// axios.defaults.headers.common["Authorization"] = token;
-
-const store = new Vuex.Store({
-  state: {
-    token: "Bearer " + localStorage.getItem("token") || null,
+async function notifyError(message) {
+  await Swal.fire({ icon: "error", title: "Hubo un problema", text: message });
+}
+function publicationForm(params) {
+  const form = new FormData();
+  form.set("text_post", params.text_post);
+  form.set("id_company", Number(params.id_company) || 1);
+  if (params.id_post != null) form.set("id_post", params.id_post);
+  if (params.id_postimage != null)
+    form.set("id_postimage", params.id_postimage);
+  if (params.image_post) form.append("image_post", params.image_post);
+  return form;
+}
+export const useAppStore = defineStore("app", {
+  state: () => ({
+    token: getToken(),
     publications: [],
     companies: [],
     users: [],
@@ -24,341 +26,185 @@ const store = new Vuex.Store({
     infoCourses: [],
     formalities: [],
     page_publication: 1,
-    number_pagination: [],
     mostrar: true,
     mostrarFormal: true,
-    mostrarCard: true
-  },
-  getters: {},
+    mostrarCard: true,
+  }),
   actions: {
-    getSchedule({ commit }) {
-      axios
-        .get("/api/classroom/schedule")
-        .then(response => {
-          this.schedules = response.data.data;
-          commit("getSchedule", this.schedules);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    getInfoCourse({ commit }) {
-      axios
-        .get("/api/classroom/info_course", {
-          params: {
-            section: 93660
-          }
-        })
-        .then(response => {
-          this.infoCourses = response.data.data;
-          commit("getInfoCourse", this.infoCourses);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    getCompanies({ commit }) {
-      axios
-        .get("/api/companies")
-        .then(response => {
-          this.companies = response.data;
-          commit("getCompanies", this.companies);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    getFormalities({ commit }) {
-      axios
-        .get("/api/formalities")
-        .then(response => {
-          this.formalities = response.data.data.formalities;
-          commit("getFormalities", this.formalities);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    getPublications({ commit }) {
-      axios
-        .get("/api/posts", {
-          params: {
-            page: this.state.page_publication
-          }
-        })
-        .then(response => {
-          this.publications = response.data.data;
-          commit("getPublications", this.publications);
-
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    getPublicationsFilter({ commit }) {
-      axios
-        .get("/api/posts?", {
-          params: {
-            company: this.companies.id
-          }
-        })
-        .then(response => {
-          this.publications =
-            this.publications.id_company == this.companies.id
-              ? response.data.data
-              : null;
-          commit("getPublications", this.publications);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-    getUsers({ commit }) {
-      axios
-        .get("/api/profile")
-        .then(response => {
-          let users = response.data;
-          commit("getUsers", users);
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    },
-
-    sendPublication({ dispatch, commit }, params) {
-      var formData = new FormData();
-
-      formData.set("text_post", params.text_post);
-      if (params.image_post) {
-        formData.append("image_post", params.image_post);
+    async loadList(field, url, params, loadingFlag) {
+      if (loadingFlag) this[loadingFlag] = true;
+      try {
+        const response = await api.get(url, { params });
+        this[field] = response.data.data ?? response.data;
+        return this[field];
+      } catch {
+        await notifyError(
+          "No se pudieron cargar los datos. Comprueba la conexión con la API.",
+        );
+        return [];
+      } finally {
+        if (loadingFlag) this[loadingFlag] = false;
       }
-
-      formData.set("id_company", 1);
-
-      axios
-        .post("/api/post/create?", formData)
-        .then(response => {
-          if (response.data.success) {
-            Swal.fire({
-              icon: "success",
-              title: "Publicado Correctamente",
-              text: "Se creo la publicacion correctamente"
-            });
-            dispatch("getPublications");
-          }
-        })
-        .catch(error => {
-          Swal.fire({
-            icon: "error",
-            title: "Hubo un problema",
-            text: "No se creo la publicacion correctamente"
-          });
-        });
     },
-    updatePublication({ dispatch, commit }, params) {
-      var formData = new FormData();
-      formData.set("id_post", params.id_post);
-      formData.set("id_company", params.id_company);
-      formData.set("id_postimage", params.id_postimage);
-      formData.set("text_post", params.text_post);
-
-      if (params.image_post) {
-        formData.append("image_post", params.image_post);
+    getSchedule() {
+      return this.loadList(
+        "schedules",
+        "/api/classroom/schedule",
+        undefined,
+        "mostrar",
+      );
+    },
+    async getCourses() {
+      const schedules = await this.getSchedule();
+      this.courses = schedules.flatMap((day) => day.courses || []);
+    },
+    getInfoCourse(section = 93660) {
+      return this.loadList("infoCourses", "/api/classroom/info_course", {
+        section,
+      });
+    },
+    getCompanies() {
+      return this.loadList("companies", "/api/companies");
+    },
+    getUsers() {
+      return this.loadList("users", "/api/profile");
+    },
+    async getFormalities() {
+      this.mostrarFormal = true;
+      try {
+        const response = await api.get("/api/formalities");
+        this.formalities = response.data.data.formalities;
+      } catch {
+        await notifyError("No se pudieron cargar los trámites.");
+      } finally {
+        this.mostrarFormal = false;
       }
-
-      axios
-        .post("/api/post/edit?", formData)
-        .then(response => {
-          if (response.data.success) {
-            Swal.fire({
-              icon: "success",
-              title: "Actualizado Correctamente",
-              text: "Se actualizo la publicacion correctamente"
-            });
-          }
-          dispatch("getPublications");
-        })
-        .catch(error => {
-          Swal.fire({
-            icon: "error",
-            title: "Hubo un problema",
-            text: "No se actualizo la publicacion correctamente"
-          });
+    },
+    getPublications() {
+      return this.loadList(
+        "publications",
+        "/api/posts",
+        { page: this.page_publication },
+        "mostrarCard",
+      );
+    },
+    getPublicationsFilter(company) {
+      this.page_publication = 1;
+      return this.loadList(
+        "publications",
+        "/api/posts",
+        { company },
+        "mostrarCard",
+      );
+    },
+    async getComments(post) {
+      const response = await api.get("/api/comments", {
+        params: { id_post: post.id, id_comment: post.comment.at(-1)?.id || 0 },
+      });
+      const existing = new Set(post.comment.map((comment) => comment.id));
+      post.comment.push(
+        ...response.data.data.filter((comment) => !existing.has(comment.id)),
+      );
+    },
+    async savePublication(params, edit = false) {
+      try {
+        const response = await api.post(
+          edit ? "/api/post/edit" : "/api/post/create",
+          publicationForm(params),
+        );
+        if (!response.data.success) throw new Error(response.data.message);
+        this.page_publication = 1;
+        await this.getPublications();
+        await Swal.fire({
+          icon: "success",
+          title: edit ? "Publicación actualizada" : "Publicado correctamente",
         });
+        return true;
+      } catch {
+        await notifyError("No se pudo guardar la publicación.");
+        return false;
+      }
     },
-
-    // LOGIN
-    retrieveToken(context, credentials) {
-      return new Promise((resolve, reject) => {
-        axios
-          .post("/api/login", {
-            studentCode: credentials.studentCode,
-            password: credentials.password
-          })
-          .then(response => {
-            const token = response.data.data.token;
-
-            localStorage.setItem("token", token);
-            context.commit("retrieveToken", token);
-            resolve(response);
-
-            //sweet
-            const Toast = Swal.mixin({
-              toast: true,
-              position: "top-end",
-              showConfirmButton: false,
-              timer: 1200,
-              timerProgressBar: true,
-              onOpen: toast => {
-                toast.addEventListener("mouseenter", Swal.stopTimer);
-                toast.addEventListener("mouseleave", Swal.resumeTimer);
-              }
-            });
-
-            Toast.fire({
-              icon: "success",
-              title: "Inicio Correctamente"
-            });
-            //sweet
-          })
-          .catch(error => {
-            console.log(error);
-            reject(error);
-          });
+    sendPublication(params) {
+      return this.savePublication(params);
+    },
+    updatePublication(params) {
+      return this.savePublication(params, true);
+    },
+    async retrieveToken(credentials) {
+      const response = await api.post("/api/login", credentials);
+      if (!response.data.success || !response.data.data?.token) {
+        throw new Error(response.data.message || "Credenciales incorrectas");
+      }
+      if (response.data.data.user.id_type_user === 1) {
+        throw new Error("El usuario no es un profesor o colaborador.");
+      }
+      this.token = response.data.data.token;
+      setToken(this.token);
+      await Swal.fire({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 1200,
+        timerProgressBar: true,
+        icon: "success",
+        title: "Sesión iniciada",
+        didOpen: (toast) => {
+          toast.addEventListener("mouseenter", Swal.stopTimer);
+          toast.addEventListener("mouseleave", Swal.resumeTimer);
+        },
       });
+      return response;
     },
-    deletePublication({ context, dispatch }, id) {
-      Swal.fire({
-        title: "Eliminar Publicación",
+    async logout() {
+      try {
+        await api.post("/api/logout");
+      } catch {
+        // Clear the local session even when the server cannot be reached.
+      } finally {
+        this.token = null;
+        setToken(null);
+        this.$reset();
+      }
+    },
+    async deleteRecord(url, payload, title) {
+      const result = await Swal.fire({
+        title,
         text: "¡No podrás revertir esto!",
-        type: "warning",
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Eliminar"
-      }).then(async function(result) {
-        if (result.value == true) {
-          axios
-            .post("/api/post/delete?", {
-              id_post: id
-            })
-            .then(response => {
-              if (response.data.success) {
-                Swal.fire({
-                  icon: "success",
-                  title: "Eliminado Correctamente",
-                  text: "Se eliminó correctamente"
-                });
-              }
-              dispatch("getPublications");
-            });
-        }
+        confirmButtonText: "Eliminar",
+        cancelButtonText: "Cancelar",
       });
+      if (!result.isConfirmed) return;
+      try {
+        const response = await api.post(url, payload);
+        if (!response.data.success) throw new Error(response.data.message);
+        await this.getPublications();
+        await Swal.fire({ icon: "success", title: "Eliminado correctamente" });
+      } catch {
+        await notifyError("No se pudo eliminar el registro.");
+      }
     },
-    deleteComentarios({ context, dispatch }, id) {
-      Swal.fire({
-        title: "Eliminar Comentario",
-        text: "¡No podrás revertir esto!",
-        type: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Eliminar"
-      }).then(async function(result) {
-        if (result.value == true) {
-          axios
-            .post("/api/comment/delete?", {
-              id_comment: id
-            })
-
-            .then(response => {
-              if (response.data.success) {
-                Swal.fire({
-                  icon: "success",
-                  title: "Eliminado Correctamente",
-                  text: "Se eliminó correctamente"
-                });
-              }
-              dispatch("getPublications");
-            });
-        }
-      });
-    }
-  },
-
-  mutations: {
-    // getCourses(state, courses) {
-    //   state.courses = courses;
-    // },
-    deletePublication(state, id) {
-      const index = state.publication.findIndex(item => item.id == id);
-      state.publication.splice(index, 1);
+    deletePublication(id) {
+      return this.deleteRecord(
+        "/api/post/delete",
+        { id_post: id },
+        "Eliminar publicación",
+      );
     },
-    deleteComentarios(state, id) {
-      const index = state.publication.findIndex(item => item.id == id);
-      state.publication.splice(index, 1);
-    },
-
-    getPublications(state, publications) {
-      state.publications = publications;
-      state.mostrarCard = false;
-    },
-    getSchedule(state, schedules) {
-      state.schedules = schedules;
-      state.mostrar = false;
-    },
-    getCompanies(state, companies) {
-      state.companies = companies;
-    },
-    getInfoCourse(state, infoCourses) {
-      state.infoCourses = infoCourses;
-    },
-    getFormalities(state, formalities) {
-      state.formalities = formalities;
-      state.mostrarFormal = false;
-    },
-    getUsers(state, users) {
-      state.users = users;
-    },
-    retrieveToken(state, token) {
-      state.token = token;
-    },
-    sendPublication(state, payload) {
-      console.log(payload);
-      state.publications.push({
-        text_post: payload.text_post,
-        image_post: payload.image_post,
-        id_company: payload.id_company,
-        is_mine: true
-      });
-    },
-    updatePublication(state, payload) {
-      console.log(payload);
-      const index = state.publications.findIndex(item => item.id == payload.id);
-      state.publications.splice(index, 1, {
-        id_post: payload.id,
-        id_company: payload.id_company,
-        id_postimage: payload.id_postimage,
-        text_post: payload.text_post,
-        image_post: payload.image_post
-      });
+    deleteComentarios(id) {
+      return this.deleteRecord(
+        "/api/comment/delete",
+        { id_comment: id },
+        "Eliminar comentario",
+      );
     },
     nextPage() {
-      this.state.page_publication++;
-      if (this.state.page_publication <= 1) {
-        this.state.page_publication = 1;
-      }
-      console.log(this.state.page_publication);
+      this.page_publication++;
     },
     previusPage() {
-      this.state.page_publication--;
-      if (this.state.page_publication <= 1) {
-        this.state.page_publication = 1;
-      }
-      console.log(this.state.page_publication);
+      this.page_publication = Math.max(1, this.page_publication - 1);
     },
-    pagination() {}
-  }
+  },
 });
-
-export default store;

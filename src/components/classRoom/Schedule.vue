@@ -9,7 +9,7 @@
         :key="index"
       >
         <div class="shudleCourses">
-          <p style="z-index:5;" v-html="item.day"></p>
+          <p style="z-index: 5" v-html="item.day"></p>
           <p class="shudleCourses-number" v-html="item.number"></p>
         </div>
         <div class="hideBubble">
@@ -27,30 +27,34 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
-import bubble from "@/components/bubble";
-import loading from "@/components/loading";
+import { mapState } from "pinia";
+import { useAppStore } from "@/store";
+import bubble from "@/components/bubble.vue";
+import loading from "@/components/loading.vue";
 export default {
+  setup() {
+    return { appStore: useAppStore() };
+  },
   name: "Cursos",
   components: {
     bubble,
-    loading
+    loading,
   },
   data() {
     return {
       circles: [],
       number: null,
-      showBubble: true
+      showBubble: true,
     };
   },
   mounted() {
-    this.$store.dispatch("getSchedule");
+    this.appStore.getSchedule();
   },
   computed: {
-    ...mapState(["schedules"]),
-    ...mapState(["mostrar"])
+    ...mapState(useAppStore, ["schedules"]),
+    ...mapState(useAppStore, ["mostrar"]),
   },
-  methods: {}
+  methods: {},
 };
 </script>
 <style>
@@ -72,6 +76,9 @@ export default {
   align-items: center;
   height: 66px;
   position: relative;
+  background: var(--ocean-gradient-surface);
+  border-radius: 12px;
+  margin: 8px;
 }
 .shudleCourses:nth-child(1) {
   font-size: 18px;
@@ -84,10 +91,27 @@ export default {
 .shudleCourses-number {
   position: absolute;
   font-size: 73px;
-  color: rgba(222, 222, 222, 0.74118);
+  color: var(--ocean-border);
 }
 .change-style {
-  background: #f1f0f0;
+  background: linear-gradient(180deg, var(--ocean-ice), var(--ocean-tint));
+  box-shadow: inset 0 4px var(--ocean-highlight);
+}
+
+.lol:nth-child(even) {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ocean-blue) 12%, transparent),
+    transparent 80%
+  );
+}
+
+.lol:nth-child(3) {
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--ocean-cyan) 16%, transparent),
+    transparent 80%
+  );
 }
 
 .item {
@@ -113,8 +137,10 @@ export default {
   border-radius: 27px;
   padding: 20px;
   min-height: 210px;
-  color: #504d4d;
-  border: 1px solid #c7c7c7;
+  color: var(--ocean-ink);
+  border: 1px solid var(--ocean-border);
+  background: var(--ocean-gradient-surface);
+  box-shadow: 0 5px 20px color-mix(in srgb, var(--ocean-blue) 10%, transparent);
 }
 .shudleCourses-CoursesStyle {
   position: absolute;
@@ -127,7 +153,7 @@ export default {
 }
 .shudleCourses-Courses p:nth-child(1) {
   font-size: 12px;
-  color: #e2dada;
+  color: var(--ocean-link, var(--ocean-deep));
   font-weight: 400;
 }
 .shudleCourses-Courses p:nth-child(2) {
@@ -155,7 +181,7 @@ export default {
 
   .lol {
     height: auto;
-    border-bottom: 0.5px solid #c5c1c1;
+    border-bottom: 0.5px solid var(--ocean-border);
     padding: 10px 0;
   }
   .shudleCourses:nth-child(1) {

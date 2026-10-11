@@ -6,7 +6,7 @@
         <div class="contLogin">
           <router-link :to="{ path: '/login' }">
             <div class="my-2">
-              <v-btn depressed large>Login</v-btn>
+              <v-btn variant="flat" size="large">Login</v-btn>
             </div>
           </router-link>
         </div>
@@ -33,7 +33,7 @@
 
 export default {
   name: "home",
-  components: {}
+  components: {},
 };
 </script>
 
@@ -55,8 +55,14 @@ h1 {
 }
 
 .wrapper {
-  background: #1565c0;
-  background: linear-gradient(to bottom right, #1565c0 0%, #1565c0 100%);
+  background: var(--ocean-deep);
+  background: linear-gradient(
+    135deg,
+    var(--ocean-navy) 0%,
+    var(--ocean-deep) 48%,
+    var(--ocean-blue) 82%,
+    var(--ocean-cyan) 100%
+  );
   position: absolute;
   left: 0;
   width: 100%;
@@ -110,17 +116,18 @@ h1 {
   background-color: rgba(255, 255, 255, 0.4);
 }
 .contLogin input:focus {
-  background-color: white;
+  background-color: var(--ocean-surface);
   width: 300px;
-  color: #1565c0;
+  color: var(--ocean-link, var(--ocean-deep));
 }
 .contLogin button {
   appearance: none;
   outline: 0;
-  background-color: white;
+  background: var(--ocean-gradient-yellow);
+  box-shadow: 0 5px 18px color-mix(in srgb, var(--ocean-amber) 25%, transparent);
   border: 0;
   padding: 10px 15px;
-  color: #1565c0;
+  color: var(--ocean-onAccent, var(--ocean-deep));
   border-radius: 3px;
   width: 250px;
   cursor: pointer;
@@ -128,7 +135,7 @@ h1 {
   transition-duration: 0.25s;
 }
 .contLogin button:hover {
-  background-color: #f5f7f9;
+  background: var(--ocean-gradient-yellow-hover);
 }
 .bg-bubbles {
   position: absolute;

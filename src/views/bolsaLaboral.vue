@@ -6,12 +6,12 @@
 </template>
 
 <script>
-import Navigator from "@/components/Navigator";
+import Navigator from "@/components/Navigator.vue";
 
 export default {
   name: "bolsaLaboral",
   components: {
-    Navigator
-  }
+    Navigator,
+  },
 };
 </script>

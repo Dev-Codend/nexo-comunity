@@ -2,6 +2,10 @@
   <div class="wrapper">
     <div class="container">
       <h1>Login</h1>
+      <p v-if="demo" style="color: white">
+        Modo demo: ingresa cualquier usuario y contraseña. Los cambios se
+        reinician al recargar.
+      </p>
       <div class="contLogin">
         <input type="text" placeholder="Nombre de Usuario" v-model="codigo" />
         <input type="password" placeholder="Contraseña" v-model="password" />
@@ -9,11 +13,7 @@
           id="login-button"
           :loading="loading3"
           :disabled="loading3"
-          @click="
-            vuexLogin();
-            loader = 'loading3';
-            loader;
-          "
+          @click="login"
           >Acceder</v-btn
         >
 
@@ -41,94 +41,45 @@
 </template>
 
 <script>
-/* eslint-disable no-console */
-/* eslint-disable no-unused-vars */
-import axios from "axios";
+import { useAppStore } from "@/store";
+import { isDemo } from "@/services/api";
 import Swal from "sweetalert2";
 
 export default {
   name: "Login",
-
-  data() {
-    return {
-      codigo: "",
-      password: "",
-      serverError: "",
-      loader: null,
-      loading3: false
-    };
+  setup() {
+    return { appStore: useAppStore() };
   },
-
-  watch: {
-    loader() {
-      const l = this.loader;
-      this[l] = !this[l];
-      setTimeout(() => (this[l] = false), 3000);
-      this.loader = null;
-    }
+  data() {
+    return { demo: isDemo, codigo: "", password: "", loading3: false };
   },
   methods: {
-    // async login() {
-    //   const response = await axios.post("/api/login", {
-    //     studentCode: this.codigo,
-    //     password: this.password
-    //   });
-    //   if (response.data.success) {
-    //     const { id_type_user } = response.data.data.user;
-
-    //     if (id_type_user !== 1) {
-    //       localStorage.setItem("token", response.data.data.token);
-    //       const AUTH_TOKEN = "Bearer " + localStorage.getItem("token");
-    //       this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
-
-    //       // Swal.fire("Has inicado Correctamente", "success");
-    //       this.$router.push("dashboard");
-    //     } else {
-    //       Swal.fire({
-    //         icon: "info",
-    //         title: "Rol no permitido",
-    //         text: "El usuario no es un profesor o colaborador"
-    //       });
-    //     }
-    //   } else {
-    //     Swal.fire({
-    //       icon: "error",
-    //       title: response.data.message,
-    //       text: "Puede que su usuario o contraseña este incorrecta"
-    //     });
-    //   }
-    // },
-
-    vuexLogin() {
-      this.$store
-        .dispatch("retrieveToken", {
+    async login() {
+      this.loading3 = true;
+      try {
+        await this.appStore.retrieveToken({
           studentCode: this.codigo,
-          password: this.password
-        })
-        .then(response => {
-          const { id_type_user } = response.data.data.user;
-
-          if (id_type_user !== 1) {
-            localStorage.setItem("token", response.data.data.token);
-            const token = "Bearer " + localStorage.getItem("token");
-            this.$http.defaults.headers.common["Authorization"] = token;
-            this.$router.push("dashboard");
-          } else {
-            Swal.fire({
-              icon: "info",
-              title: "Rol no permitido",
-              text: "El usuario no es un profesor o colaborador"
-            });
-          }
-        })
-        .catch(error => {
-          Swal.fire({
-            icon: "error",
-            text: "Puede que su usuario o contraseña este incorrecta"
-          });
+          password: this.password,
         });
-    }
-  }
+        const redirect = this.$route.query.redirect;
+        await this.$router.push(
+          typeof redirect === "string" &&
+            redirect.startsWith("/") &&
+            !redirect.startsWith("//")
+            ? redirect
+            : { name: "dashboard" },
+        );
+      } catch (error) {
+        await Swal.fire({
+          icon: "error",
+          title: "No se pudo iniciar sesión",
+          text: error.response?.data?.message || error.message,
+        });
+      } finally {
+        this.loading3 = false;
+      }
+    },
+  },
 };
 </script>
 <style scoped>
@@ -139,8 +90,14 @@ export default {
 }
 
 .wrapper {
-  background: #1565c0;
-  background: linear-gradient(to bottom right, #1565c0 0%, #1565c0 100%);
+  background: var(--ocean-deep);
+  background: linear-gradient(
+    135deg,
+    var(--ocean-navy) 0%,
+    var(--ocean-deep) 48%,
+    var(--ocean-blue) 82%,
+    var(--ocean-cyan) 100%
+  );
   position: absolute;
   left: 0;
   width: 100%;
@@ -194,17 +151,18 @@ export default {
   background-color: rgba(255, 255, 255, 0.4);
 }
 .contLogin input:focus {
-  background-color: white;
+  background-color: var(--ocean-surface);
   width: 300px;
-  color: #1565c0;
+  color: var(--ocean-link, var(--ocean-deep));
 }
 .contLogin button {
   appearance: none;
   outline: 0;
-  background-color: white;
+  background: var(--ocean-gradient-yellow);
+  box-shadow: 0 5px 18px color-mix(in srgb, var(--ocean-amber) 25%, transparent);
   border: 0;
   padding: 10px 15px;
-  color: #1565c0;
+  color: var(--ocean-onAccent, var(--ocean-deep));
   border-radius: 3px;
   width: 250px;
   cursor: pointer;
@@ -212,7 +170,7 @@ export default {
   transition-duration: 0.25s;
 }
 .contLogin button:hover {
-  background-color: #f5f7f9;
+  background: var(--ocean-gradient-yellow-hover);
 }
 .bg-bubbles {
   position: absolute;

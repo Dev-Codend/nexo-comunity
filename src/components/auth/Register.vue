@@ -16,7 +16,7 @@
           >Registrar
         </v-btn>
         <router-link :to="{ path: '/login' }">
-          <div style="position:relative">
+          <div style="position: relative">
             <span class="butonRegister">Login</span>
           </div>
         </router-link>
@@ -47,7 +47,7 @@ export default {
       codigo: "",
       password: "",
       loader: null,
-      loading3: false
+      loading3: false,
     };
   },
 
@@ -57,11 +57,11 @@ export default {
       this[l] = !this[l];
       setTimeout(() => (this[l] = false), 3000);
       this.loader = null;
-    }
+    },
   },
   methods: {
-    register() {}
-  }
+    register() {},
+  },
 };
 </script>
 <style scoped>
@@ -81,8 +81,14 @@ export default {
 }
 
 .wrapper {
-  background: #ffc104;
-  background: linear-gradient(to bottom right, #ffc104 0%, #ffc104 100%);
+  background: var(--ocean-deep);
+  background: linear-gradient(
+    135deg,
+    var(--ocean-navy) 0%,
+    var(--ocean-deep) 48%,
+    var(--ocean-blue) 82%,
+    var(--ocean-cyan) 100%
+  );
   position: absolute;
   left: 0;
   width: 100%;
@@ -136,17 +142,18 @@ export default {
   background-color: rgba(255, 255, 255, 0.4);
 }
 .contLogin input:focus {
-  background-color: white;
+  background-color: var(--ocean-surface);
   width: 300px;
-  color: #ffc104;
+  color: var(--ocean-link, var(--ocean-deep));
 }
 .contLogin button {
   appearance: none;
   outline: 0;
-  background-color: white;
+  background: var(--ocean-gradient-yellow);
+  box-shadow: 0 5px 18px color-mix(in srgb, var(--ocean-amber) 25%, transparent);
   border: 0;
   padding: 10px 15px;
-  color: #ffc104;
+  color: var(--ocean-onAccent, var(--ocean-deep));
   border-radius: 3px;
   width: 250px;
   cursor: pointer;
@@ -154,7 +161,7 @@ export default {
   transition-duration: 0.25s;
 }
 .contLogin button:hover {
-  background-color: #f5f7f9;
+  background: var(--ocean-gradient-yellow-hover);
 }
 .bg-bubbles {
   position: absolute;

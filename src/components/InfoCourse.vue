@@ -22,23 +22,26 @@
   </div>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapState } from "pinia";
+import { useAppStore } from "@/store";
 export default {
+  setup() {
+    return { appStore: useAppStore() };
+  },
   name: "InfoCourse",
+  emits: ["onClose"],
   components: {},
   props: [],
   data() {
     return {};
   },
   mounted() {
-    // this.$store.dispatch("getCourses");
-    this.$store.dispatch("getInfoCourse");
+    this.appStore.getInfoCourse();
   },
   computed: {
-    // ...mapState(["courses"]),
-    ...mapState(["infoCourses"])
+    ...mapState(useAppStore, ["infoCourses"]),
   },
-  methods: {}
+  methods: {},
 };
 </script>
 
@@ -48,13 +51,13 @@ export default {
   min-height: 50%;
   height: auto;
   border-radius: 10px;
-  background-color: #fff;
+  background-color: var(--ocean-surface);
   position: fixed;
   left: 58%;
   top: 50%;
   transform: translate(-50%, -50%);
   z-index: 10;
-  box-shadow: 4px 4px 10px #b9b9b9;
+  box-shadow: 4px 4px 10px var(--ocean-border);
 }
 .close {
   width: 30px;
@@ -63,7 +66,7 @@ export default {
   margin: 13px 0 0 13px;
   padding: 2px;
   cursor: pointer;
-  color: #333;
+  color: var(--ocean-ink);
 }
 .section__section {
   display: flex;
@@ -86,7 +89,7 @@ export default {
 .info__section__teacher--photo {
   width: 75px;
   height: 100px;
-  background-color: #333;
+  background-color: var(--ocean-ink);
 }
 .info__section__teacher--name {
   width: 175px;
@@ -97,7 +100,7 @@ export default {
 }
 .info__section__teacher--name p,
 .info__section__section p {
-  color: #333 !important;
+  color: var(--ocean-ink) !important;
 }
 .info__section__section {
   padding-top: 15px;

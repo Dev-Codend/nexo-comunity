@@ -4,7 +4,7 @@
     <div id="box"></div>
   </div>
 </template>
-<style>
+<style scoped>
 #loader {
   position: absolute;
   top: calc(50% - 20px);
@@ -21,7 +21,7 @@
 #box {
   width: 50px;
   height: 50px;
-  background: #bcdafb;
+  background: var(--ocean-gradient-yellow);
   animation: animate 0.5s linear infinite;
   position: absolute;
   top: 0;
@@ -49,7 +49,7 @@
 #shadow {
   width: 50px;
   height: 5px;
-  background: #0079ff;
+  background: var(--ocean-blue);
   opacity: 0.1;
   position: absolute;
   top: 59px;
@@ -61,20 +61,5 @@
   50% {
     transform: scale(1.2, 1);
   }
-}
-
-body {
-  background: #1465c0;
-  overflow: hidden;
-}
-h4 {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  margin: 0;
-  font-weight: 200;
-  opacity: 0.5;
-  font-family: sans-serif;
-  color: #1465c0;
 }
 </style>

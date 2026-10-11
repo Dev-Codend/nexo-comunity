@@ -1,0 +1,434 @@
+:root {
+  /* Ocean palette for light mode; dark mode overrides these roles below. */
+  --ocean-deep: #125fb9 !important;
+  --ocean-navy: #032e38 !important;
+  --ocean-blue: #008f93 !important;
+  --ocean-cyan: #a4dfeb !important;
+  --ocean-ice: #d6f1f6 !important;
+  --ocean-yellow: #125fb9 !important;
+  --ocean-lemon: #087f97 !important;
+  --ocean-gold: #087f97 !important;
+  --ocean-amber: #125fb9 !important;
+  --ocean-highlight: #a4dfeb !important;
+  --ocean-background: #eef4fc !important;
+  --ocean-surface: #ffffff !important;
+  --ocean-tint: #e7f6f9 !important;
+  --ocean-border: #add7e0 !important;
+  --ocean-ink: #032e38 !important;
+  --ocean-muted: #426573 !important;
+  --ocean-link: #125fb9 !important;
+  --ocean-onPrimary: #ffffff !important;
+  --ocean-onAccent: #ffffff !important;
+  --ocean-gradient-yellow: linear-gradient(
+    125deg,
+    var(--ocean-yellow),
+    var(--ocean-gold) 65%,
+    var(--ocean-lemon)
+  );
+  --ocean-gradient-yellow-hover: linear-gradient(
+    125deg,
+    var(--ocean-lemon),
+    var(--ocean-yellow)
+  );
+  --ocean-gradient-navigation: linear-gradient(
+    to top,
+    var(--ocean-navy),
+    var(--ocean-blue) 55%,
+    var(--ocean-deep)
+  );
+  --ocean-gradient-header: linear-gradient(
+    110deg,
+    var(--ocean-navy),
+    var(--ocean-blue) 55%,
+    var(--ocean-deep)
+  );
+  --ocean-gradient-accent: linear-gradient(
+    90deg,
+    var(--ocean-deep),
+    var(--ocean-cyan) 55%,
+    var(--ocean-yellow)
+  );
+  --ocean-gradient-surface: linear-gradient(
+    155deg,
+    var(--ocean-surface) 45%,
+    var(--ocean-background) 80%,
+    var(--ocean-ice)
+  );
+  --floral-gradient-base: linear-gradient(
+    to top,
+    var(--ocean-navy) 0%,
+    var(--ocean-blue) 25%,
+    color-mix(in srgb, var(--ocean-blue) 70%, var(--ocean-highlight)) 50%,
+    var(--ocean-ice) 85%,
+    var(--ocean-background)
+  );
+}
+
+:root:not([data-color-mode="dark"]) {
+  --floral-gradient-base:
+    radial-gradient(
+      ellipse at 100% 100%,
+      color-mix(in srgb, var(--ocean-blue) 14%, transparent),
+      transparent 55%
+    ),
+    linear-gradient(to top, var(--ocean-ice), #e7f7fa 40%, #f5fcfd 75%, #ffffff);
+  --ocean-gradient-navigation: linear-gradient(
+    to top,
+    var(--ocean-ice),
+    #eaf7fa 55%,
+    #ffffff
+  );
+  --ocean-gradient-header: linear-gradient(
+    110deg,
+    #ffffff,
+    #eaf7fa 65%,
+    var(--ocean-ice)
+  );
+}
+
+:root:not([data-color-mode="dark"]) .ocean-navigation,
+:root:not([data-color-mode="dark"]) .ocean-navigation .v-list-item--active,
+:root:not([data-color-mode="dark"]) .v-app-bar.v-toolbar {
+  color: var(--ocean-ink) !important;
+}
+
+:root:not([data-color-mode="dark"])
+  .ocean-navigation
+  .v-list-item:not(.v-list-item--active)
+  .v-icon,
+:root:not([data-color-mode="dark"]) .v-app-bar-title small {
+  color: var(--ocean-link);
+}
+
+:root:not([data-color-mode="dark"]) .theme-switch {
+  color: var(--ocean-ink);
+  background: linear-gradient(135deg, #ffffff, var(--ocean-ice));
+}
+
+:root:not([data-color-mode="dark"]) .theme-switch__badge {
+  color: var(--ocean-link);
+}
+
+:root:not([data-color-mode="dark"]) .theme-switch__state {
+  color: var(--ocean-muted);
+}
+
+:root:not([data-color-mode="dark"]) .publication.gris {
+  background: var(--floral-gradient-base);
+}
+
+/* Keep Vuetify components aligned with the CSS-only palette. */
+.v-theme--custom {
+  --v-theme-primary: 18, 95, 185 !important;
+  --v-theme-secondary: 0, 143, 147 !important;
+  --v-theme-accent: 18, 95, 185 !important;
+  --v-theme-background: 238, 244, 252 !important;
+  --v-theme-surface: 255, 255, 255 !important;
+  --v-theme-surface-variant: 231, 246, 249 !important;
+  --v-theme-on-surface: 3, 46, 56 !important;
+  --v-theme-on-background: 3, 46, 56 !important;
+  --v-theme-on-primary: 255, 255, 255 !important;
+  --v-theme-on-secondary: 255, 255, 255 !important;
+  --v-theme-on-accent: 255, 255, 255 !important;
+  --v-theme-info: 0, 143, 147 !important;
+  --v-theme-warning: 164, 223, 235 !important;
+}
+
+:root[data-color-mode="dark"] {
+  color-scheme: dark;
+  --ocean-deep: #a979ff !important;
+  --ocean-navy: #07060b !important;
+  --ocean-blue: #7544b3 !important;
+  --ocean-cyan: #c5a4ff !important;
+  --ocean-ice: #251b35 !important;
+  --ocean-yellow: #b18aff !important;
+  --ocean-lemon: #c5a4ff !important;
+  --ocean-gold: #bd99ff !important;
+  --ocean-amber: #a979ff !important;
+  --ocean-highlight: #d4bcff !important;
+  --ocean-background: #15101f !important;
+  --ocean-surface: #0b090f !important;
+  --ocean-tint: #1b1525 !important;
+  --ocean-border: #3c2d50 !important;
+  --ocean-ink: #f5f0ff !important;
+  --ocean-muted: #c2b4d2 !important;
+  --ocean-link: #cfb3ff !important;
+  --ocean-onPrimary: #ffffff !important;
+  --ocean-onAccent: #160e23 !important;
+  --ocean-gradient-navigation: linear-gradient(to top, #08060c, #171020);
+  --ocean-gradient-header: linear-gradient(110deg, #08060c, #20152e);
+  --ocean-gradient-surface: linear-gradient(145deg, #08070b 45%, #1d142a);
+  --floral-gradient-base:
+    radial-gradient(
+      ellipse at 85% 10%,
+      rgb(169 121 255 / 20%),
+      transparent 65%
+    ),
+    linear-gradient(to top, #08060d, #231734);
+}
+
+:root[data-color-mode="dark"] .v-theme--custom {
+  --v-theme-primary: 169, 121, 255 !important;
+  --v-theme-secondary: 117, 68, 179 !important;
+  --v-theme-accent: 177, 138, 255 !important;
+  --v-theme-background: 21, 16, 31 !important;
+  --v-theme-surface: 11, 9, 15 !important;
+  --v-theme-surface-variant: 27, 21, 37 !important;
+  --v-theme-on-surface: 245, 240, 255 !important;
+  --v-theme-on-background: 245, 240, 255 !important;
+  --v-theme-on-primary: 22, 14, 35 !important;
+  --v-theme-on-accent: 22, 14, 35 !important;
+  --v-theme-info: 197, 164, 255 !important;
+  --v-theme-warning: 212, 188, 255 !important;
+}
+
+:root[data-color-mode="dark"] .ocean-navigation,
+:root[data-color-mode="dark"] .ocean-navigation .v-list-item--active,
+:root[data-color-mode="dark"] .v-app-bar.v-toolbar {
+  color: var(--ocean-ink);
+}
+
+:root[data-color-mode="dark"]
+  .ocean-navigation
+  .v-list-item:not(.v-list-item--active)
+  .v-icon,
+:root[data-color-mode="dark"] .v-app-bar-title small {
+  color: var(--ocean-link);
+}
+
+:root[data-color-mode="dark"] .formalities .header {
+  background: linear-gradient(110deg, #402663, #08060c);
+}
+
+.theme-switch-container {
+  padding: 18px 12px 22px;
+  border-top: 1px solid color-mix(in srgb, var(--ocean-cyan) 25%, transparent);
+}
+
+.theme-switch {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 72px;
+  padding: 12px;
+  border: 1px solid color-mix(in srgb, var(--ocean-cyan) 45%, transparent);
+  border-radius: 14px;
+  background: linear-gradient(
+    130deg,
+    color-mix(in srgb, var(--ocean-cyan) 16%, transparent),
+    color-mix(in srgb, var(--ocean-navy) 32%, transparent)
+  );
+  color: #ffffff;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgb(0 0 0 / 10%);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.theme-switch__badge {
+  display: grid;
+  place-items: center;
+  flex: 0 0 32px;
+  height: 36px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--ocean-cyan) 25%, transparent);
+  color: #ffffff;
+}
+
+.theme-switch__badge .v-icon {
+  font-size: 20px;
+}
+
+.theme-switch__copy {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.theme-switch__title {
+  font-size: 13px;
+  font-weight: 700;
+}
+.theme-switch__state {
+  font-size: 11px;
+  color: var(--ocean-ice);
+}
+:root[data-color-mode="dark"] .theme-switch__state {
+  color: var(--ocean-muted);
+}
+
+.theme-switch__track {
+  position: relative;
+  flex: 0 0 36px;
+  height: 22px;
+  border: 1px solid rgb(255 255 255 / 40%);
+  border-radius: 7px;
+  background: rgb(0 0 0 / 20%);
+  transition: background 180ms ease;
+}
+
+.theme-switch__thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 14px;
+  height: 14px;
+  border-radius: 4px;
+  background: #ffffff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 20%);
+  transition: transform 200ms ease;
+}
+
+.theme-switch[aria-checked="true"] .theme-switch__track {
+  background: var(--ocean-gradient-yellow);
+  border-color: var(--ocean-cyan);
+}
+
+.theme-switch[aria-checked="true"] .theme-switch__thumb {
+  transform: translateX(14px);
+}
+
+.theme-switch:hover {
+  border-color: var(--ocean-cyan);
+  box-shadow: 0 5px 20px color-mix(in srgb, var(--ocean-cyan) 18%, transparent);
+}
+
+.shudleCourses-CoursesStyle {
+  background: var(--ocean-gradient-accent) !important;
+}
+
+.lol:nth-child(3) .shudleCourses-CoursesStyle {
+  background: var(--ocean-highlight) !important;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: var(--ocean-ink);
+  background: var(--ocean-background);
+}
+
+.v-application {
+  background: var(--floral-gradient-base);
+  background-attachment: fixed;
+}
+
+/* Restore spacing previously supplied by Vuetify 2's global typography. */
+p {
+  margin-bottom: 16px;
+}
+
+input[type="text"],
+input[type="password"],
+input[type="number"],
+textarea {
+  color: var(--ocean-ink);
+  background-color: var(--ocean-surface);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--ocean-muted);
+  opacity: 1;
+}
+
+::selection {
+  color: var(--ocean-onAccent, var(--ocean-navy));
+  background: var(--ocean-yellow);
+}
+
+:where(input, textarea, select, button, a):focus-visible {
+  outline: 3px solid var(--ocean-deep);
+  outline-offset: 3px;
+}
+
+.ocean-navigation.v-navigation-drawer {
+  color: var(--ocean-surface);
+  background: var(--ocean-gradient-navigation);
+  border-right: 1px solid var(--ocean-border);
+}
+
+.ocean-navigation .v-list-item {
+  margin-block: 6px;
+  border-inline-start: 3px solid transparent;
+  transition:
+    background 180ms ease,
+    color 180ms ease;
+}
+
+.ocean-navigation .v-list-item:hover {
+  background: color-mix(in srgb, var(--ocean-cyan) 18%, transparent);
+}
+
+.ocean-navigation .v-list-item--active {
+  color: var(--ocean-surface);
+  background: linear-gradient(
+    110deg,
+    color-mix(in srgb, var(--ocean-cyan) 28%, transparent),
+    color-mix(in srgb, var(--ocean-blue) 35%, transparent)
+  );
+  border-inline-start-color: var(--ocean-yellow);
+}
+
+.ocean-navigation .v-list-item:not(.v-list-item--active) .v-icon {
+  color: var(--ocean-ice);
+  opacity: 1;
+}
+
+.v-app-bar.v-toolbar {
+  background: var(--ocean-gradient-header) !important;
+  color: var(--ocean-surface);
+  border-bottom: 1px solid var(--ocean-blue);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--ocean-navy) 5%, transparent);
+}
+
+.v-app-bar-title small {
+  color: var(--ocean-ice);
+}
+
+.v-overlay .v-card {
+  border: 1px solid var(--ocean-border);
+  border-top: 4px solid var(--ocean-blue);
+  background: var(--ocean-gradient-surface);
+}
+
+.swal2-popup {
+  color: var(--ocean-ink);
+  background: var(--ocean-gradient-surface);
+  border: 1px solid var(--ocean-border);
+}
+
+.swal2-actions .swal2-confirm {
+  color: var(--ocean-onAccent, var(--ocean-navy));
+  background: var(--ocean-gradient-yellow);
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--ocean-amber) 22%, transparent);
+}
+
+.v-btn.bg-accent {
+  background: var(--ocean-gradient-yellow) !important;
+  color: var(--ocean-onAccent, var(--ocean-navy)) !important;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--ocean-amber) 22%, transparent);
+}
+
+.v-btn.bg-accent:hover,
+.swal2-actions .swal2-confirm:hover {
+  background: var(--ocean-gradient-yellow-hover) !important;
+}
+
+.swal2-actions .swal2-cancel {
+  color: var(--ocean-onPrimary, var(--ocean-surface));
+  background: var(--ocean-deep);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}

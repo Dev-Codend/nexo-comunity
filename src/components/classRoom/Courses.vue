@@ -12,27 +12,31 @@
   </div>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapState } from "pinia";
+import { useAppStore } from "@/store";
 export default {
+  setup() {
+    return { appStore: useAppStore() };
+  },
   name: "Courses",
   components: {},
   data() {
     return {};
   },
   mounted() {
-    this.$store.dispatch("getCourses");
+    this.appStore.getCourses();
   },
   computed: {
-    ...mapState(["courses"])
+    ...mapState(useAppStore, ["courses"]),
   },
-  methods: {}
+  methods: {},
 };
 </script>
-<style scope>
+<style scoped>
 .courses {
   width: 100%;
   height: auto;
-  border: 1px #333333 solid;
+  border: 1px var(--ocean-border) solid;
 }
 .list__courses {
   width: 100%;
@@ -47,7 +51,7 @@ export default {
 .course {
   width: 450px;
   height: 100px;
-  border: 1px solid #333333;
+  border: 1px solid var(--ocean-border);
   padding: 12px 15px;
 }
 .course__name {

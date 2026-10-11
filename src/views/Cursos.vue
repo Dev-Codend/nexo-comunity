@@ -7,22 +7,22 @@
 </template>
 
 <script>
-import Navigator from "@/components/Navigator";
-// import Courses from "@/components/classRoom/Courses";
-import Schedule from "@/components/classRoom/Schedule";
+import Navigator from "@/components/Navigator.vue";
+// import Courses from "@/components/classRoom/Courses.vue";
+import Schedule from "@/components/classRoom/Schedule.vue";
 
 export default {
   name: "Cursos",
   components: {
     Navigator,
     // Courses,
-    Schedule
+    Schedule,
   },
   data() {
     return {
       showCourses: false,
-      showSchedule: true
+      showSchedule: true,
     };
-  }
+  },
 };
 </script>

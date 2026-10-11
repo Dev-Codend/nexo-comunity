@@ -13,8 +13,8 @@
         <loading v-if="mostrarCard"></loading>
         <template v-else>
           <publication-card
-            v-for="(publi, index) in publications"
-            :key="index"
+            v-for="publi in publications"
+            :key="publi.id"
             :publication="publi"
           />
         </template>
@@ -28,15 +28,18 @@
 </template>
 
 <script>
-import Navigator from "@/components/Navigator";
-import loading from "@/components/loading";
+import Navigator from "@/components/Navigator.vue";
+import loading from "@/components/loading.vue";
 
 import PublicationCard from "@/components/PublicationCard.vue";
 import PublicationSend from "@/components/PublicationSend.vue";
-import { mapState } from "vuex";
+import { mapState } from "pinia";
+import { useAppStore } from "@/store";
 
-// import { mapMutations } from "vuex";
 export default {
+  setup() {
+    return { appStore: useAppStore() };
+  },
   name: "Dashboard",
 
   data() {
@@ -46,35 +49,35 @@ export default {
   },
   created() {},
   mounted() {
-    this.$store.dispatch("getPublications");
+    this.appStore.getPublications();
   },
 
   computed: {
-    ...mapState(["publications"]),
-    ...mapState(["mostrarCard"])
+    ...mapState(useAppStore, ["publications"]),
+    ...mapState(useAppStore, ["mostrarCard"]),
   },
   components: {
     PublicationCard,
     PublicationSend,
     Navigator,
-    loading
+    loading,
   },
   methods: {
     nextPage() {
       let publicaciones = document.getElementById("publications");
 
-      this.$store.commit("nextPage");
-      this.$store.dispatch("getPublications");
+      this.appStore.nextPage();
+      this.appStore.getPublications();
       publicaciones.scrollTop = 0;
     },
     previusPage() {
       let publicaciones = document.getElementById("publications");
 
-      this.$store.commit("previusPage");
-      this.$store.dispatch("getPublications");
+      this.appStore.previusPage();
+      this.appStore.getPublications();
       publicaciones.scrollTop = 0;
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -101,7 +104,7 @@ export default {
 
 .linea {
   height: calc(100vh - 100px);
-  border: 0.5px solid #a3a3a3;
+  border: 0.5px solid var(--ocean-border);
   margin: 20px 0 0 15px;
 }
 .publication {
@@ -110,10 +113,17 @@ export default {
   height: calc(100vh - 66px);
   overflow: scroll;
   padding: 10px;
+  background: var(--floral-gradient-base);
 }
 
 .gris {
-  background-color: #f1f2f5;
+  background:
+    radial-gradient(
+      ellipse at 0% 30%,
+      color-mix(in srgb, var(--ocean-cyan) 20%, transparent),
+      transparent 60%
+    ),
+    var(--floral-gradient-base);
   order: -1;
 }
 .btn__control {
@@ -123,6 +133,12 @@ export default {
 .btn__control input {
   padding: 0 15px;
   outline: none;
+  color: var(--ocean-link, var(--ocean-deep));
+  background: linear-gradient(120deg, var(--ocean-surface), var(--ocean-ice));
+  border: 1px solid var(--ocean-border);
+  border-radius: 6px;
+  padding-block: 5px;
+  cursor: pointer;
 }
 
 @media (max-width: 730px) {

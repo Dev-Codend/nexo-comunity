@@ -58,6 +58,26 @@ En otros servidores, configura las rutas de la aplicación para devolver
 
 Ya no hace falta `--openssl-legacy-provider`.
 
+## Vercel
+
+`vercel.json` configura Vite, la salida `dist/` y la reescritura de rutas
+a `index.html`, para que abrir o recargar `/login`, `/dashboard` y otras rutas
+no produzca un 404.
+
+El despliegue en Vercel compila el **modo demo sin backend** y activa
+`VITE_MOCK_API=true` explícitamente durante el build. Ingresa cualquier usuario
+y contraseña no vacíos. Los datos se reinician al recargar.
+
+Después de subir estos cambios al repositorio conectado, genera un nuevo
+despliegue en Vercel. Usa la configuración del repositorio, con `dist` como
+Output Directory y Node.js 24.
+
+Para conectar un backend real, cambia `buildCommand` en `vercel.json` a
+`npm run build`, configura `VITE_MOCK_API=false` y `VITE_API_BASE_URL` con la
+URL HTTPS pública de tu API en Vercel, y vuelve a desplegar. La API debe
+permitir solicitudes desde el dominio de la aplicación. `127.0.0.1` apunta
+al equipo del visitante y solo sirve para desarrollo local.
+
 ## Verificación
 
 ```sh
